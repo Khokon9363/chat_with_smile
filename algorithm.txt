@@ -1,3 +1,109 @@
+install laravel
+install auth
+install vue
+npm install && npm run dev
+
+webSocket install
+vue chat scroll install
+vue toastr install
+
+register those in app.js and bootstrap.js
+
+make:event EventName
+make:listener ListenerName
+
+configure in config -> app.php,broadcasting.php and webSocket.php
+
+configure in .env pusher and broadcast
+
+configure event and listener
+------
+*event
+<?php
+
+namespace App\Events;
+
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use App\User;
+
+class ChatEvent implements ShouldBroadcast
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+
+    public $chat;
+    public $user;
+
+    public function __construct($chat,User $user)
+    {
+        $this->chat = $chat;
+        $this->user = $user;
+        $this->dontBroadcastToCurrentUser();
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('chat');
+    }
+}
+------------
+*listener
+---------
+<?php
+
+namespace App\Listeners;
+
+use App\Events\ChatEvent;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+
+class ChatListener
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  object  $event
+     * @return void
+     */
+    public function handle(ChatEvent $event)
+    {
+        //
+    }
+}
+----------
+make a route in channel route
+Broadcast::channel('chat', function ($user) {
+    return $user;
+});
+------
+just a component be like
+
 <template>
 <div class="container">
    <div class="row mt-4">
@@ -189,3 +295,4 @@ export default {
        }
     }
 </style>
+--------

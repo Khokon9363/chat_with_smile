@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Chat;
+use App\Events\ChatEvent;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -48,6 +49,10 @@ class HomeController extends Controller
         $chat->receiver = $request->receiver;
         $chat->chat = $request->chat;
         $chat->save();
+
+        $user = User::find(auth()->user()->id);
+        event(new ChatEvent($chat, $user));
+
         return response()->json($chat, 200);
     }
 }
